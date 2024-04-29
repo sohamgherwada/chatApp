@@ -42,6 +42,18 @@ int main(){
         addr_size = sizeof(client_addr);
         client_socket = accept(server_socket, (struct sockaddr*)&client_addr, &addr_size);
         printf("Connection Established\n");
+
+        bzero(buffer,1024);
+        recv(client_socket, buffer, sizeof(buffer), 0);
+        printf("Client: %s\n", buffer);
+        bzero(buffer,1024);
+        strcpy(buffer, "Hello from server");
+        printf("Server: %s\n", buffer);
+
+        send(client_socket, buffer, strlen(buffer), 0); 
+        close(client_socket);
+        printf("[+]Client disconnected\n\n");
+
     }
     
     return 0;
