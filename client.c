@@ -28,15 +28,25 @@ int main(){
     addr.sin_addr.s_addr = inet_addr(ip);
     connect(socke, (struct sockaddr*)&addr, sizeof(addr));
     printf("Connected\n");
-    bzero(buffer,1024);
-    strcpy(buffer, "Hello from client");
-    printf("Client: %s\n", buffer);
-    send(socke, buffer, strlen(buffer), 0);
-
-    bzero(buffer,1024);
-    recv(socke, buffer, sizeof(buffer), 0);
-    printf("Server: %s\n", buffer);
-    close(socke);
+    char message[1024];
+    while(1) {
+        printf("Enter your message: ");
+        fgets(message, sizeof(message), stdin);
+        message[strcspn(message, "\n")] = '\0'; // Remove trailing newline character
+        
+        // Send message to server
+        send(socke, message, strlen(message), 0);
+        
+        // Receive response from server
+        bzero(buffer, 1024);
+        recv(socke, buffer, sizeof(buffer), 0);
+        printf("Server: %s\n", buffer);
+        
+        // Check if conversation should end
+        if (strcmp(message, "exit") == 0) {
+            break;
+        }
+    }
     printf("[+]Disconnected from the server\n\n");
     return 0;
 }
